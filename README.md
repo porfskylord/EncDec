@@ -1,6 +1,6 @@
 🔐 Encryption & Decryption (JavaFX)
 
-A JavaFX-based desktop app for secure encryption and decryption of data. Features an intuitive GUI, strong encryption, and a standalone setup with no database dependency.
+A JavaFX-based desktop app for secure encryption and decryption of data. Features an intuitive GUI, strong encryption.
 
 🛠️ Technologies
 
