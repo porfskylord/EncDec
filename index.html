@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Learning Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            border-radius: 10px;
+        }
+        .topic {
+            margin-bottom: 10px;
+        }
+        .subtopics {
+            margin-left: 20px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Java Learning Progress</h2>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar">0%</div>
+    </div>
+
+    <h3>Topics</h3>
+    <div id="topics-list">
+        <!-- Java Topics will be inserted here -->
+    </div>
+
+    <script>
+        const topics = [
+            { name: "Java Basics", subtopics: ["Introduction to Java", "JVM, JRE, JDK", "Hello World Program", "Java Compilation Process"] },
+            { name: "Data Types and Variables", subtopics: ["Primitive & Reference Data Types", "Type Casting", "Variables and Constants", "Naming Conventions"] },
+            { name: "Operators in Java", subtopics: ["Arithmetic Operators", "Relational Operators", "Logical Operators", "Bitwise Operators", "Ternary Operator"] },
+            { name: "Control Statements", subtopics: ["If-Else", "Switch Case", "Loops (For, While, Do-While)", "Break & Continue Statements"] },
+            { name: "Arrays & Strings", subtopics: ["One-Dimensional & Multi-Dimensional Arrays", "String Class & Methods", "StringBuffer & StringBuilder"] },
+            { name: "OOPs Concepts", subtopics: ["Classes & Objects", "Constructors", "Static Keyword", "Method Overloading & Overriding", "Encapsulation", "Inheritance", "Polymorphism", "Abstraction"] },
+            { name: "Exception Handling", subtopics: ["Types of Exceptions", "Try, Catch, Finally", "Throws & Throw", "Custom Exceptions"] },
+            { name: "Collections Framework", subtopics: ["List (ArrayList, LinkedList, Vector)", "Set (HashSet, LinkedHashSet)", "Queue (PriorityQueue, Deque)", "Map (HashMap, TreeMap)", "Iterators"] },
+            { name: "Multithreading", subtopics: ["Thread Class & Runnable", "Thread Lifecycle", "Synchronization", "Deadlocks & Race Conditions"] },
+            { name: "File Handling (I/O)", subtopics: ["Byte Stream & Character Stream", "FileReader & FileWriter", "Object Serialization"] },
+            { name: "Java 8+ Features", subtopics: ["Lambda Expressions", "Streams API", "Optional Class", "Default & Static Methods in Interfaces"] },
+            { name: "Utility Classes", subtopics: ["Math Class", "Wrapper Classes", "Date & Time API", "Scanner Class"] },
+            { name: "Networking", subtopics: ["Socket Programming", "URL & HTTPURLConnection", "InetAddress Class"] },
+            { name: "JDBC", subtopics: ["JDBC Drivers", "Connecting to Database", "CRUD Operations", "PreparedStatement vs Statement"] },
+            { name: "Reflection API", subtopics: ["Inspecting Classes, Methods, Fields", "Dynamic Method Invocation"] },
+            { name: "Annotations", subtopics: ["Built-in Annotations (@Override, @Deprecated)", "Custom Annotations"] },
+            { name: "Java Security", subtopics: ["Cryptography (MD5, SHA)", "Secure Coding Practices"] },
+            { name: "Memory Management", subtopics: ["Stack & Heap Memory", "Garbage Collection", "WeakReference & SoftReference"] },
+            { name: "Design Patterns", subtopics: ["Singleton", "Factory", "Builder", "Observer", "Strategy"] },
+            { name: "Java Modules", subtopics: ["JPMS Introduction", "Creating & Using Modules"] }
+        ];
+
+        const topicsList = document.getElementById("topics-list");
+        const progressBar = document.getElementById("progress-bar");
+
+        // Load topics dynamically
+        topics.forEach((topic, index) => {
+            const div = document.createElement("div");
+            div.classList.add("topic");
+
+            const mainCheckbox = document.createElement("input");
+            mainCheckbox.type = "checkbox";
+            mainCheckbox.id = "topic-" + index;
+            mainCheckbox.addEventListener("change", function() {
+                const subCheckboxes = div.querySelectorAll(".subtopics input[type='checkbox']");
+                subCheckboxes.forEach(cb => cb.checked = mainCheckbox.checked);
+                saveProgress();
+                updateProgress();
+            });
+
+            const label = document.createElement("label");
+            label.htmlFor = mainCheckbox.id;
+            label.textContent = topic.name;
+
+            div.appendChild(mainCheckbox);
+            div.appendChild(label);
+
+            // Subtopics
+            if (topic.subtopics.length > 0) {
+                const subDiv = document.createElement("div");
+                subDiv.classList.add("subtopics");
+
+                topic.subtopics.forEach((subtopic, subIndex) => {
+                    const subCheckbox = document.createElement("input");
+                    subCheckbox.type = "checkbox";
+                    subCheckbox.id = `subtopic-${index}-${subIndex}`;
+                    subCheckbox.classList.add("subtopic-checkbox");
+                    subCheckbox.addEventListener("change", function() {
+                        if (!subCheckbox.checked) {
+                            mainCheckbox.checked = false;
+                        }
+                        saveProgress();
+                        updateProgress();
+                    });
+
+                    const subLabel = document.createElement("label");
+                    subLabel.htmlFor = subCheckbox.id;
+                    subLabel.textContent = subtopic;
+
+                    subDiv.appendChild(subCheckbox);
+                    subDiv.appendChild(subLabel);
+                    subDiv.appendChild(document.createElement("br"));
+                });
+
+                div.appendChild(subDiv);
+            }
+
+            topicsList.appendChild(div);
+        });
+
+        function updateProgress() {
+            const checkedCount = document.querySelectorAll("input[type='checkbox']:checked").length;
+            const totalTopics = document.querySelectorAll("input[type='checkbox']").length;
+            const percentage = Math.round((checkedCount / totalTopics) * 100);
+
+            progressBar.style.width = percentage + "%";
+            progressBar.textContent = percentage + "%";
+        }
+
+        function saveProgress() {
+            const progressData = {};
+            document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                progressData[cb.id] = cb.checked;
+            });
+            localStorage.setItem("javaProgress", JSON.stringify(progressData));
+        }
+
+        function loadProgress() {
+            const savedData = JSON.parse(localStorage.getItem("javaProgress"));
+            if (savedData) {
+                document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                    cb.checked = savedData[cb.id] || false;
+                });
+                updateProgress();
+            }
+        }
+
+        window.onload = loadProgress;
+    </script>
+
+</body>
+</html>
